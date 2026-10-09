@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body>
+    <%- include('includes/nav.ejs') %>
+    <form action="/books/edit/<%= books._id %>" method="post" enctype="multipart/form-data">
+        <label>Title:</label>
+        <input type="text" name="title" value="<%= books.title %>" required>
+        <br><br>
+        <label>Author:</label>
+        <input type="text" name="author" value="<%= books.author %>" required>
+        <br><br>
+        <label>Price:</label>
+        <input type="number" name="price" value="<%= books.price %>" required>
+        <br><br>
+        <label>Category:</label>
+        <input type="text" name="category" value="<%= books.category %>" required>
+        <br><br>
+        <label>Current Image</label>
+        <br>
+        <img src="<%= books.img.startsWith('/') ? books.img : '/' + books.img %>" width="150">
+        <br><br>
+        <label>New Image</label>
+        <input type="file" name="img">
+        <br><br>
+        <button type="submit">Update</button>
+        
+    </form>
+    <%-include('includes/footer.ejs')  %>
+</body>
+</html>

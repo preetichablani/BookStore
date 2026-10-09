@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<nav>
+    <div class="text-white flex justify-around items-center p-5"
+         style="background: linear-gradient(135deg, #123f63, #18577f, #236f9f);
+                box-shadow: 0 4px 15px rgba(18, 63, 99, 0.22);">
+        <h1 class="text-2xl font-bold" style="font-family: Georgia, serif;">Book Haven</h1>
+        <div class="flex items-center gap-8 text-lg font-semibold">
+            <a href="/" class="hover:text-blue-100 transition">Home</a>
+            <a href="/books" class="hover:text-blue-100 transition">Books</a>
+            <a href="/category" class="hover:text-blue-100 transition">Categories</a>
+            <a href="/about" class="hover:text-blue-100 transition">About</a>
+            <a href="/contact" class="hover:text-blue-100 transition">Contact</a>
+
+            <a href="/admin/login"
+               title="Admin Login"
+               class="w-9 h-9 rounded-full
+                      flex items-center justify-center
+                      hover:bg-white/15
+                      transition">
+                <i class="fa-solid fa-user-shield"></i>
+            </a>
+
+            <a href="/cart"
+               title="Shopping Cart"
+               class="relative w-9 h-9 rounded-full
+                      flex items-center justify-center
+                      hover:bg-white/15 transition">
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <span id="cart-count"
+                      class="absolute -top-1 -right-1
+                             min-w-[18px] h-[18px]
+                             px-1 rounded-full
+                             bg-white text-[#18577f]
+                             text-[10px] font-bold
+                             flex items-center justify-center">
+                    <%= typeof cartCount !== 'undefined' ? cartCount : 0 %>
+                </span>
+            </a>
+        </div>
+    </div>
+</nav>
