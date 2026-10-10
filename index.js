@@ -1,6 +1,9 @@
 const ADMIN_USERNAME = "admin"
 const ADMIN_PASSWROD = "1234"
 
+const path = require('path');
+const fs = require('fs');
+
 const express = require('express')
 const app = express()
 const port = 3000
@@ -78,16 +81,21 @@ app.use((req, res, next) => {
     next();
 });
 
-const storage = multer.diskStorage({
-    destination:function(req, file, cb){
-        cb(null,'public/uploads')
-    },
-    filename:function(req, file, cb){
-        cb(null, Date.now() + '-' + file.originalname)
-    }
-})
-const upload = multer({storage :storage})
 
+const uploadDir = path.join(__dirname, 'public', 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '-');
+        cb(null, Date.now() + '-' + safeName);
+    }
+});
+const upload = multer({ storage });
 const transport = nodemailer.createTransport({
     service: 'gmail',
     auth:{
@@ -111,17 +119,33 @@ app.get('/books/new',(req,res)=>{
     res.render('newbook')
 })
 
-app.post('/books',isAdmin,upload.single('img'),async(req,res)=>{
-    const book = new Book({
-        title:req.body.title,
-        author:req.body.author,
-        price:req.body.price,
-        category:req.body.category,
-        img:'/uploads/' + req.file.filename
-    })
-    await book.save()
-    res.redirect('/books')
-})
+
+app.post('/books', isAdmin, upload.single('img'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send('Please select a book image.');
+        }
+
+        console.log('Uploaded image path:', req.file.path);
+
+        const book = new Book({
+            title: req.body.title,
+            author: req.body.author,
+            price: req.body.price,
+            category: req.body.category,
+            img: '/uploads/' + req.file.filename
+        });
+
+        await book.save();
+
+        console.log('Saved image URL:', book.img);
+
+        res.redirect('/books');
+    } catch (error) {
+        console.error('Book upload error:', error);
+        res.status(500).send('Unable to add book. Please try again.');
+    }
+});
 
 app.post('/books/delete/:id',isAdmin,async(req,res)=>{
     const id = req.params.id
