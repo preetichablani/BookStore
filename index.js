@@ -265,28 +265,30 @@ app.get('/category/:category', async(req, res)=>{
 app.get('/contact',(req,res)=>{  
     res.render('contact')
 })
-app.post('/contact', (req, res) => {
 
-    const name = req.body.name;
-    const email = req.body.email;
-    const mob = req.body.mob;
-    const message = req.body.message;
+app.post('/contact', async (req, res) => {
+    try {
+        const { name, email, mob, message } = req.body;
 
-    transport.sendMail({
-        to: 'preetichablani2006@gmail.com',
-        subject: 'New Customer Message',
-        text: `Name: ${name} Email: ${email} Phone: ${mob} Message: ${message}`
-    }, (error) => {
-        if (error) {
-            console.log(error);
-            res.send('Email not sent');
-        } else {
-            res.send(`<script>
-                    alert("Message Sent Successfully!");
-                    window.location.href = "/contact";
-                </script>`);
-        }
-    });
+        await transport.sendMail({
+            from: process.env.EMAIL_USER,
+            to: process.env.EMAIL_USER,
+            replyTo: email,
+            subject: 'New Customer Message - Book Haven',
+            text: `Name: ${name}
+            Email: ${email}
+            Phone: ${mob}
+            Message: ${message}`
+        });
+
+        res.send(`<script>
+            alert("Message Sent Successfully!");
+            window.location.href = "/contact";
+        </script>`);
+    } catch (error) {
+        console.error('Contact email error:', error);
+        res.status(500).send('Email not sent. Please try again later.');
+    }
 });
 
 app.post('/place-order', (req, res) => {
