@@ -3,34 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Edit Book | Book Haven</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
-<body>
+
+<body class="min-h-screen bg-[#eef7ff] text-gray-700">
+
     <%- include('includes/nav.ejs') %>
-    <form action="/books/edit/<%= books._id %>" method="post" enctype="multipart/form-data">
-        <label>Title:</label>
-        <input type="text" name="title" value="<%= books.title %>" required>
-        <br><br>
-        <label>Author:</label>
-        <input type="text" name="author" value="<%= books.author %>" required>
-        <br><br>
-        <label>Price:</label>
-        <input type="number" name="price" value="<%= books.price %>" required>
-        <br><br>
-        <label>Category:</label>
-        <input type="text" name="category" value="<%= books.category %>" required>
-        <br><br>
-        <label>Current Image</label>
-        <br>
-        <img src="<%= books.img.startsWith('/') ? books.img : '/' + books.img %>" width="150">
-        <br><br>
-        <label>New Image</label>
-        <input type="file" name="img">
-        <br><br>
-        <button type="submit">Update</button>
-        
-    </form>
-    <%-include('includes/footer.ejs')  %>
+
+    <main class="max-w-3xl mx-auto px-5 py-10">
+
+        <div class="text-center mb-8">
+            <p class="text-sm font-semibold uppercase tracking-[3px] text-[#236f9f]">
+                Book Haven
+            </p>
+
+            <h1 class="text-3xl md:text-4xl font-bold text-[#123f63] mt-2"
+                style="font-family: Georgia, serif;">
+                <i class="fa-solid fa-pen-to-square mr-2"></i>
+                Edit Book Details
+            </h1>
+
+            <p class="text-gray-500 mt-3">
+                Update your book information and cover image.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg border border-[#dcecf7] overflow-hidden">
+
+            <div class="h-2 bg-gradient-to-r from-[#123f63] via-[#18577f] to-[#236f9f]"></div>
+
+            <form action="/books/edit/<%= books._id %>"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="p-6 md:p-9 space-y-5">
+
+                <div>
+                    <label class="block text-sm font-semibold text-[#123f63] mb-2">
+                        <i class="fa-solid fa-book mr-2 text-[#236f9f]"></i>
+                        Title
+                    </label>
+
+                    <input type="text"
+                           name="title"
+                           value="<%= books.title %>"
+                           required
+                           class="w-full rounded-xl border border-[#c9dfed] bg-[#f8fbfe] px-4 py-3 outline-none transition focus:border-[#236f9f] focus:ring-2 focus:ring-[#236f9f]/20">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-[#123f63] mb-2">
+                        <i class="fa-solid fa-user-pen mr-2 text-[#236f9f]"></i>
+                        Author
+                    </label>
+
+                    <input type="text"
+                           name="author"
+                           value="<%= books.author %>"
+                           required
+                           class="w-full rounded-xl border border-[#c9dfed] bg-[#f8fbfe] px-4 py-3 outline-none transition focus:border-[#236f9f] focus:ring-2 focus:ring-[#236f9f]/20">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                    <div>
+                        <label class="block text-sm font-semibold text-[#123f63] mb-2">
+                            <i class="fa-solid fa-indian-rupee-sign mr-2 text-[#236f9f]"></i>
+                            Price (₹)
+                        </label>
+
+                        <input type="number"
+                               name="price"
+                               value="<%= books.price %>"
+                               required
+                               class="w-full rounded-xl border border-[#c9dfed] bg-[#f8fbfe] px-4 py-3 outline-none transition focus:border-[#236f9f] focus:ring-2 focus:ring-[#236f9f]/20">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-[#123f63] mb-2">
+                            <i class="fa-solid fa-layer-group mr-2 text-[#236f9f]"></i>
+                            Category
+                        </label>
+
+                        <input type="text"
+                               name="category"
+                               value="<%= books.category %>"
+                               required
+                               class="w-full rounded-xl border border-[#c9dfed] bg-[#f8fbfe] px-4 py-3 outline-none transition focus:border-[#236f9f] focus:ring-2 focus:ring-[#236f9f]/20">
+                    </div>
+
+                </div>
+
+                <div class="rounded-xl border border-[#dcecf7] bg-[#f5faff] p-5">
+
+                    <label class="block text-sm font-semibold text-[#123f63] mb-3">
+                        <i class="fa-solid fa-image mr-2 text-[#236f9f]"></i>
+                        Current Book Cover
+                    </label>
+
+                    <div class="flex flex-col sm:flex-row items-center gap-5">
+
+                        <div class="w-36 h-44 flex items-center justify-center rounded-xl bg-white border border-[#dcecf7] p-2">
+                            <img
+                                src="<%= books.img.startsWith('/') ? books.img : '/' + books.img %>"
+                                alt="<%= books.title %>"
+                                class="max-w-full max-h-full object-contain">
+                        </div>
+
+                        <div class="flex-1 text-center sm:text-left">
+                            <p class="font-semibold text-[#123f63]">
+                                <%= books.title %>
+                            </p>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                Current cover image
+                            </p>
+
+                            <label class="block text-sm font-semibold text-[#123f63] mt-5 mb-2">
+                                Upload New Image (Optional)
+                            </label>
+
+                            <input type="file"
+                                   name="img"
+                                   accept="image/*"
+                                   class="block w-full text-sm text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-[#18577f] file:px-4 file:py-2 file:font-semibold file:text-white hover:file:bg-[#123f63] file:cursor-pointer">
+                            
+                            <p class="text-xs text-gray-400 mt-2">
+                                Leave empty to keep the current image.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+
+                    <button type="submit"
+                            class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#18577f] px-6 py-3 font-semibold text-white shadow-md transition hover:bg-[#123f63] cursor-pointer">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Update Book
+                    </button>
+
+                    <a href="/books"
+                       class="inline-flex items-center justify-center gap-2 rounded-xl border border-[#c9dfed] bg-white px-6 py-3 font-semibold text-[#18577f] transition hover:bg-[#eef7ff]">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Back to Books
+                    </a>
+
+                </div>
+
+            </form>
+        </div>
+
+        <p class="text-center text-sm text-gray-400 mt-6">
+            <i class="fa-solid fa-book-open mr-1"></i>
+            Keep your collection up to date with Book Haven.
+        </p>
+
+    </main>
+
+    <%- include('includes/footer.ejs') %>
+
 </body>
 </html>
