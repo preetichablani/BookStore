@@ -145,7 +145,9 @@ app.get('/books', async (req, res) => {
     });
 });
 
-
+app.get('/books/new', (req, res) => {
+    res.render('newbook');
+});
 
 app.post('/books', isAdmin, upload.single('img'), async (req, res) => {
     try {
@@ -180,6 +182,15 @@ app.post('/cart/add/:id', async (req, res) => {
     if (!book) {
         return res.send('Book not found');
     }
+    const imageMap = {
+        "The Alchemist": "/uploads/1791709402563-.jpg",
+        "Wings of Fire": "/uploads/wings.jpg",
+        "Panchatantra": "/uploads/pa.jpg",
+        "Tenali Raman Stories": "/uploads/1790847338296-TR.jpg",
+        "The Jungle Book": "/uploads/jungle.jpg",
+        "The Blue Umbrella ": "/uploads/bu.jpg"
+    };
+    const image = imageMap[book.title] || book.img;
     if (!req.session.cart) {
         req.session.cart = [];
     }
@@ -187,24 +198,26 @@ app.post('/cart/add/:id', async (req, res) => {
         item => String(item.id) === String(book._id)
     );
     if (existingBook) {
-
         existingBook.quantity += 1;
+        existingBook.img = image;
     } else {
         req.session.cart.push({
             id: book._id,
             title: book.title,
             author: book.author,
             price: book.price,
-            img: book.img,
+            img: image,
             quantity: 1
         });
     }
     res.redirect('/cart');
-})
+});
+
 app.get('/cart', (req, res) => {
     const cart = req.session.cart || [];
     res.render('cart', { cart });
 });
+
 
 app.get('/checkout', (req, res) => {
     const cart = req.session.cart || [];
