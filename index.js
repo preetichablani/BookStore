@@ -81,7 +81,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
 const uploadDir = path.join(__dirname, 'public', 'uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -106,18 +105,46 @@ const transport = nodemailer.createTransport({
 
 app.get('/', async (req, res) => {
     const books = await Book.find().sort({ _id: -1 }).limit(2);
+    const imageMap = {
+        "The Alchemist": "/uploads/1791709402563-.jpg",
+        "Wings of Fire": "/uploads/wings.jpg",
+        "Panchatantra": "/uploads/pa.jpg",
+        "Tenali Raman Stories": "/uploads/1790847338296-TR.jpg",
+        "The Jungle Book": "/uploads/jungle.jpg",
+        "The Blue Umbrella ": "/uploads/bu.jpg"
+    };
+    books.forEach(book => {
+        if (imageMap[book.title]) {
+            book.img = imageMap[book.title];
+        }
+    });
     res.render('home', { books });
-})
+});
 app.get('/about',(req,res)=>{
     res.render('about')
 })
-app.get('/books',async(req,res)=>{
+
+app.get('/books', async (req, res) => {
     const books = await Book.find();
-    res.render('books',{ books,isAdmin:req.session.isAdmin })
-})
-app.get('/books/new',(req,res)=>{
-    res.render('newbook')
-})
+    const imageMap = {
+        "The Alchemist": "/uploads/1791709402563-.jpg",
+        "Wings of Fire": "/uploads/wings.jpg",
+        "Panchatantra": "/uploads/pa.jpg",
+        "Tenali Raman Stories": "/uploads/1790847338296-TR.jpg",
+        "The Jungle Book": "/uploads/jungle.jpg",
+        "The Blue Umbrella ": "/uploads/bu.jpg"
+    };
+    books.forEach(book => {
+        if (imageMap[book.title]) {
+            book.img = imageMap[book.title];
+        }
+    });
+    res.render('books', {
+        books,
+        isAdmin: req.session.isAdmin
+    });
+});
+
 
 
 app.post('/books', isAdmin, upload.single('img'), async (req, res) => {
@@ -125,9 +152,7 @@ app.post('/books', isAdmin, upload.single('img'), async (req, res) => {
         if (!req.file) {
             return res.status(400).send('Please select a book image.');
         }
-
         console.log('Uploaded image path:', req.file.path);
-
         const book = new Book({
             title: req.body.title,
             author: req.body.author,
@@ -135,11 +160,8 @@ app.post('/books', isAdmin, upload.single('img'), async (req, res) => {
             category: req.body.category,
             img: '/uploads/' + req.file.filename
         });
-
         await book.save();
-
         console.log('Saved image URL:', book.img);
-
         res.redirect('/books');
     } catch (error) {
         console.error('Book upload error:', error);
@@ -239,35 +261,54 @@ app.post('/books/edit/:id', upload.single('img'), async(req,res)=>{
     res.redirect('/books')
 })
 
-app.get('/category', async(req, res)=>{
+app.get('/category', async (req, res) => {
     const books = await Book.find();
-
+    const imageMap = {
+        "The Alchemist": "/uploads/1791709402563-.jpg",
+        "Wings of Fire": "/uploads/wings.jpg",
+        "Panchatantra": "/uploads/pa.jpg",
+        "Tenali Raman Stories": "/uploads/1790847338296-TR.jpg",
+        "The Jungle Book": "/uploads/jungle.jpg",
+        "The Blue Umbrella ": "/uploads/bu.jpg"
+    };
+    books.forEach(book => {
+        if (imageMap[book.title]) {
+            book.img = imageMap[book.title];
+        }
+    });
     const categories = [...new Set(
         books.map(book => book.category.trim())
     )];
-
-    res.render('categories', {books, categories});
+    res.render('categories', { books, categories });
 });
-
-
-app.get('/category/:category', async(req, res)=>{
+app.get('/category/:category', async (req, res) => {
     const category = req.params.category;
     const allBooks = await Book.find();
+    const imageMap = {
+        "The Alchemist": "/uploads/1791709402563-.jpg",
+        "Wings of Fire": "/uploads/wings.jpg",
+        "Panchatantra": "/uploads/pa.jpg",
+        "Tenali Raman Stories": "/uploads/1790847338296-TR.jpg",
+        "The Jungle Book": "/uploads/jungle.jpg",
+        "The Blue Umbrella ": "/uploads/bu.jpg"
+    };
+    allBooks.forEach(book => {
+        if (imageMap[book.title]) {
+            book.img = imageMap[book.title];
+        }
+    });
     const books = allBooks.filter(book =>
         book.category.trim() === category.trim()
-);
+    );
     const categories = [...new Set(
-    allBooks.map(book => book.category.trim())
-)];
-    res.render('categories', {books, categories});
+        allBooks.map(book => book.category.trim())
+    )];
+    res.render('categories', { books, categories });
 });
-
 app.get('/contact',(req,res)=>{  
     res.render('contact')
 })
-
 app.post('/contact', (req, res) => {
-
     const name = req.body.name;
     const email = req.body.email;
     const mob = req.body.mob;

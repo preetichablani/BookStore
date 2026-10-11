@@ -81,12 +81,7 @@
                                 relative">
 
                        
-              <img
-                src="<%= books.img && books.img.startsWith('/') ? books.img : '/' + (books.img || '') %>"
-                alt="<%= books.title %>"
-                class="w-full h-full object-contain hover:scale-105 transition duration-500"
-                onerror="console.error('Book image failed to load:', this.src)"
-            >
+             <img src="/<%= (books.img || '').replace(/^\/+/, '') %>" alt="<%= books.title %>">
 
 
                         <span class="absolute top-3 left-3
