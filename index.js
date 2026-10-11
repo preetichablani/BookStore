@@ -100,7 +100,7 @@ const transport = nodemailer.createTransport({
     service: 'gmail',
     auth:{
         user:'preetichablani2006@gmail.com',
-        pass:'qywi muho iyxw wvpu',
+        pass:'iudb ecet hzpk bnnb',
     }
 })
 
@@ -266,29 +266,37 @@ app.get('/contact',(req,res)=>{
     res.render('contact')
 })
 
-app.post('/contact', async (req, res) => {
-    const { name, email, mob, message } = req.body;
+app.post('/contact', (req, res) => {
 
-    try {
-        await transport.sendMail({
-            from: process.env.EMAIL_USER,
-            to: process.env.EMAIL_USER,
-            replyTo: email,
-            subject: 'New Customer Message',
-            text: `Name: ${name}\nEmail: ${email}\nPhone: ${mob}\nMessage: ${message}`
-        });
+    const name = req.body.name;
+    const email = req.body.email;
+    const mob = req.body.mob;
+    const message = req.body.message;
 
+    transport.sendMail({
+        to: 'preetichablani2006@gmail.com',
+        subject: 'New Customer Message',
+        text: `Name: ${name}\nEmail: ${email}\nPhone: ${mob}\nMessage: ${message}`
+    }, (error, info) => {
+
+        if (error) {
+            console.log(error);
+            return res.send(`
+                <script>
+                    alert("Email not sent!");
+                    window.location.href = "/contact";
+                </script>
+            `);
+        }
         res.send(`
             <script>
                 alert("Message Sent Successfully!");
                 window.location.href = "/contact";
             </script>
         `);
-    } catch (error) {
-        console.error("Contact email error:", error);
-        res.status(500).send("Email not sent. Please check email settings.");
-    }
+    });
 });
+
 app.post('/place-order', (req, res) => {
     const payment = req.body.payment;
     const cart = req.session.cart || [];
